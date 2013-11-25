@@ -1,3 +1,3 @@
+*.a
+*/pkg/*
 .DS_STORE
-.a
-pkg/*
