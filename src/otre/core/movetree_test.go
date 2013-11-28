@@ -3,7 +3,7 @@ package core
 import "testing"
 
 func TestBasicCreation(t *testing.T) {
-	var tree *Movetree = InitMovetree()
+	var tree *Movetree = NewMovetree()
 	if tree == nil {
 		t.Errorf("Shouldn't be nil")
 	}
@@ -19,7 +19,7 @@ func TestBasicCreation(t *testing.T) {
 }
 
 func TestAddNode(t *testing.T) {
-	tree := InitMovetree()
+	tree := NewMovetree()
 	node := tree.newNode()
 	if node.Variation() != 0 {
 		t.Errorf("Should be the first variation")

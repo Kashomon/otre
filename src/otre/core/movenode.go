@@ -3,7 +3,7 @@ package core
 import "errors"
 
 type Node struct {
-	Properties map[string][]string
+	properties map[SgfProperty][]string
 	variation  int
 	depth      int
 	parent     *Node
@@ -28,8 +28,23 @@ func (n *Node) Depth() int {
 	return n.depth
 }
 
+func (n *Node) SetProp(property SgfProperty, data []string) {
+	n.properties[property] = data
+}
+
+func (n *Node) AddToProp(property SgfProperty, data ...string) {
+	props, ok := n.properties[property]
+	if !ok {
+		props = make([]string, 0, 10)
+	}
+	for _, d := range data {
+		props = append(props, d)
+	}
+	n.properties[property] = props
+}
+
 // Add a new Child node to this node. This should always succeed.
-func (n *Node) newChild() *Node {
+func (n *Node) NewChild() *Node {
 	newChild := &Node{
 		variation: len(n.Children),
 		parent:    n,

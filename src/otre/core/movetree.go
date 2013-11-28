@@ -2,10 +2,10 @@ package core
 
 type Movetree struct {
 	root        *Node
-	CurrentNode *Node
+	currentNode *Node
 }
 
-func InitMovetree() *Movetree {
+func NewMovetree() *Movetree {
 	var newNode *Node = &Node{}
 	return &Movetree{newNode, newNode}
 }
@@ -16,7 +16,20 @@ func (m *Movetree) Root() *Node {
 	return m.root
 }
 
+func (m *Movetree) CurrentNode() *Node {
+	return m.currentNode
+}
+
+func (m *Movetree) FromRoot() *Movetree {
+	return &Movetree{m.root, m.root}
+}
+
 // Add a new child node to the CurrentNode.
-func (m *Movetree) newNode() *Node {
-	return m.CurrentNode.newChild()
+func (m *Movetree) NewNode() *Node {
+	return m.CurrentNode().NewChild()
+}
+
+func (m *Movetree) MoveUp() *Movetree {
+	parent, _ := m.CurrentNode().Parent()
+	return &Movetree{m.root, parent}
 }
