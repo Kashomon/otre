@@ -45,8 +45,8 @@ type ParseError struct {
 }
 
 func (p *ParseError) Error() string {
-	return fmt.Sprintf("Error during state %v, at index %v , row %v, column %v"+
-		", curchar %v. %v", p.s, p.i, p.r, p.c, p.char, p.msg)
+	return fmt.Sprintf("Error during state %v, at index %v, line %v, column %v"+
+		", curchar %v. %v", p.s, p.i, p.r, p.c, string(p.char), p.msg)
 }
 
 type Parser struct {
@@ -65,7 +65,7 @@ func FromSgfString(sgf string) *Parser {
 }
 
 func FromSgfReader(r *strings.Reader) *Parser {
-	return &Parser{r, 0, 0, 0, '0', BEGINNING, nil, nil}
+	return &Parser{r, 0, 0, 0, '〜', BEGINNING, nil, nil}
 }
 
 func (p *Parser) ParseError(msg string) *ParseError {
@@ -96,7 +96,7 @@ func (t *TrackingData) FlushBuffer() string {
 
 func (t *TrackingData) FlushPropData(mt *Movetree) {
 	if len(t.curprop) > 0 {
-		mt.CurrentNode().AddToProp(t.curprop, t.propdata...)
+		mt.Node().AddToProp(t.curprop, t.propdata...)
 		t.propdata = make([]string, 0, 100)
 		t.curprop = SgfProperty("")
 	}
@@ -111,14 +111,16 @@ func (p *Parser) Parse() (*Movetree, error) {
 	t := NewTrackingData()
 
 	// buffer := make([]rune, 0, 1000)
-	for c, _, err := p.r.ReadRune(); err != nil; {
-		p.curchar = c
+	c, _, err := p.r.ReadRune()
+	p.curchar = c
+	for err == nil && p.r.Len() > 0 {
 		p.idx++
 		p.col++
 		if p.curchar == NEWLINE {
 			p.row++
 			p.col = 0
 			if p.curstate != PROP_DATA {
+				p.curchar, _, err = p.r.ReadRune()
 				continue // White space only matters in property data
 			}
 		}
@@ -145,13 +147,16 @@ func (p *Parser) Parse() (*Movetree, error) {
 				t.curprop = SgfProperty(testprop)
 				p.curstate = PROP_DATA
 			} else if unicode.IsSpace(p.curchar) {
-				return nil, p.ParseError("Unexpected whitespace in Property") // Should space be allowed?
+				// Should space be allowed?
+				return nil, p.ParseError("Unexpected whitespace in Property")
 			} else {
 				return nil, p.ParseError("Unexpected character")
 			}
 			break
 		case PROP_DATA:
-			if p.curchar == RBRACE && t.charbuf[len(t.charbuf)-1] == '\\' {
+			if p.curchar == RBRACE &&
+				len(t.charbuf) > 0 &&
+				t.charbuf[len(t.charbuf)-1] == '\\' {
 				t.charbuf = append(t.charbuf, p.curchar)
 			} else if p.curchar == RBRACE {
 				t.propdata = append(t.propdata, t.FlushBuffer())
@@ -172,7 +177,7 @@ func (p *Parser) Parse() (*Movetree, error) {
 			} else if p.curchar == LPAREN {
 				// A New Variation
 				t.FlushPropData(p.mt)
-				t.branches = append(t.branches, p.mt.CurrentNode())
+				t.branches = append(t.branches, p.mt.Node())
 			} else if p.curchar == RPAREN {
 				// Finish a variation
 				t.FlushPropData(p.mt)
@@ -180,16 +185,15 @@ func (p *Parser) Parse() (*Movetree, error) {
 					// This is the last variation: We're done!
 					return p.mt.FromRoot(), nil
 				}
-				var parent *Node
-				parent, t.branches = t.branches[len(t.branches)-1],
-					t.branches[:len(t.branches)-1]
-				for n := p.mt.CurrentNode(); n != parent; {
-					p.mt = p.mt.MoveUp()
+				parent := t.branches[len(t.branches)-1]
+				t.branches = t.branches[:len(t.branches)-1]
+				for n := p.mt.Node(); n != parent; {
+					n = p.mt.MoveUp().Node()
 				}
 			} else if p.curchar == SCOLON {
-				// Finish a node
+				// Finish a node, if necessary
 				t.FlushPropData(p.mt)
-				p.mt.CurrentNode().NewChild()
+				p.mt.NewNode()
 			} else if unicode.IsSpace(p.curchar) {
 				// Do nothing.  Whitespace can be ignored here.
 			} else {
@@ -199,6 +203,7 @@ func (p *Parser) Parse() (*Movetree, error) {
 		default: // We shouldn't ever get here
 			return nil, p.ParseError("Unexpected state -- couldn't match state")
 		}
+		p.curchar, _, err = p.r.ReadRune()
 	}
-	return p.mt, nil
+	return p.mt.FromRoot(), err
 }
