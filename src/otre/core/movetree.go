@@ -1,3 +1,14 @@
+//
+// Package core provides basic functionality for dealing with Go files and
+// trees. Thus, this package contains a parser for SGFs and a tree of moves (a
+// Movetree).  Movetrees are the basic data structure used to represent Go
+// games and problems
+//
+// Creating 
+//
+// To create a new Movetree from an SGF:
+// 	mt, err := FromSgfCoord("(;GM[1]...").parse()
+// 
 package core
 
 type Movetree struct {
@@ -15,7 +26,9 @@ func NewMovetree() *Movetree {
 func (m *Movetree) Root() *Node { return m.root }
 
 // Retrieve the current node.
-func (m *Movetree) Node() *Node         { return m.currentNode }
+func (m *Movetree) Node() *Node { return m.currentNode }
+
+// Return a new movetree that starts from the root node.
 func (m *Movetree) FromRoot() *Movetree { return &Movetree{m.root, m.root} }
 
 // Add a new child node to the CurrentNode.
