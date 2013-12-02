@@ -16,6 +16,12 @@ func TestBasicCreation(t *testing.T) {
 	if len(tree.Root().Children()) != 0 {
 		t.Errorf("Shouldn't any children initially")
 	}
+	if gm, _ := tree.Props().GetFirst(GM); gm != "1" {
+		t.Errorf("Expected 1, instead found %v", gm)
+	}
+	if ints := tree.Intersections(); ints != 19 {
+		t.Errorf("Expected 19, instead found %v", ints)
+	}
 }
 
 func TestAddNode(t *testing.T) {

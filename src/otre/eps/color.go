@@ -4,26 +4,34 @@ import (
 	"fmt"
 )
 
-var BLACK = &Grayscale{0}
-var WHITE = &Grayscale{1}
+// ColorDefault
+type ColorDef int
+
+const (
+	BLACK ColorDef = ColorDef(iota)
+	WHITE
+)
 
 type Color interface {
 	ColorString() string
 }
 
-// EPS Color struct.
+// Postscript Color container.
 type RGB struct {
-	r, g, b float32
+	r, g, b float64
 }
 
+// Generate the PostScript color declaration.
 func (c *RGB) ColorString() string {
 	return fmt.Sprintf("%v %v %v setrgbcolor", c.r, c.g, c.b)
 }
 
+// Postscript color container. A simplification of RGB.
 type Grayscale struct {
-	p float32
+	p float64
 }
 
+// Generate the PostScript color declaration.
 func (c *Grayscale) ColorString() string {
 	return fmt.Sprintf("%v setgray", c.p)
 }

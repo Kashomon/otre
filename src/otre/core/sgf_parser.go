@@ -96,7 +96,7 @@ func (t *TrackingData) FlushBuffer() string {
 
 func (t *TrackingData) FlushPropData(mt *Movetree) {
 	if len(t.curprop) > 0 {
-		mt.Node().AddToProp(t.curprop, t.propdata...)
+		mt.Node().Props().AddTo(t.curprop, t.propdata...)
 		t.propdata = make([]string, 0, 100)
 		t.curprop = SgfProperty("")
 	}
@@ -107,13 +107,13 @@ func (p *Parser) Parse() (*Movetree, error) {
 		// We've already performed the parsing.
 		return p.mt, p.err
 	}
-	p.mt = NewMovetree()
+	p.mt = EmptyMovetree()
 	t := NewTrackingData()
 
 	// buffer := make([]rune, 0, 1000)
 	c, _, err := p.r.ReadRune()
 	p.curchar = c
-	for err == nil && p.r.Len() > 0 {
+	for err == nil && p.r.Len() >= 0 {
 		p.idx++
 		p.col++
 		if p.curchar == NEWLINE {
@@ -122,6 +122,8 @@ func (p *Parser) Parse() (*Movetree, error) {
 			if p.curstate != PROP_DATA {
 				p.curchar, _, err = p.r.ReadRune()
 				continue // White space only matters in property data
+			} else {
+				// We will apply this character to the propdata
 			}
 		}
 		switch p.curstate {
@@ -181,10 +183,6 @@ func (p *Parser) Parse() (*Movetree, error) {
 			} else if p.curchar == RPAREN {
 				// Finish a variation
 				t.FlushPropData(p.mt)
-				if len(t.branches) == 0 {
-					// This is the last variation: We're done!
-					return p.mt.FromRoot(), nil
-				}
 				parent := t.branches[len(t.branches)-1]
 				t.branches = t.branches[:len(t.branches)-1]
 				for n := p.mt.Node(); n != parent; {
@@ -205,5 +203,5 @@ func (p *Parser) Parse() (*Movetree, error) {
 		}
 		p.curchar, _, err = p.r.ReadRune()
 	}
-	return p.mt.FromRoot(), err
+	return setMovetreeDefaults(p.mt.FromRoot()), err
 }
