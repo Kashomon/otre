@@ -3,7 +3,7 @@ package eps
 import (
 	"fmt"
 	"math"
-	"otre/base"
+	"otre/point"
 )
 
 // circleTemplate = "%v %v %v 0 360 arc closepath gsave %v fill" +
@@ -44,7 +44,7 @@ func PsDefs() string {
 	return wStoneDef + bStoneDef + rayDef + wDiscDef
 }
 
-func Stone(pt base.Coord, r float64, c ColorDef) string {
+func Stone(pt point.Coord, r float64, c ColorDef) string {
 	sType := "ws"
 	if c == BLACK {
 		sType = "bs"
@@ -52,16 +52,16 @@ func Stone(pt base.Coord, r float64, c ColorDef) string {
 	return fmt.Sprintf(stoneTemplate, twop(pt.Xf()), twop(pt.Yf()), twop(r), sType)
 }
 
-func StarPoint(pt base.Coord, r float64) string {
+func StarPoint(pt point.Coord, r float64) string {
 	return fmt.Sprintf(stoneTemplate, twop(pt.Xf()), twop(pt.Yf()), twop(r), "bs")
 }
 
-func Line(s, e base.Coord) string {
+func Line(s, e point.Coord) string {
 	return fmt.Sprintf(lineTemplate,
 		twop(s.Xf()), twop(s.Yf()), twop(e.Xf()), twop(e.Yf()))
 }
 
-func Cross(tl, bl, br, tr base.Coord, c ColorDef) string {
+func Cross(tl, bl, br, tr point.Coord, c ColorDef) string {
 	cType := "xw"
 	if c == BLACK {
 		cType = "xb"
@@ -74,7 +74,7 @@ func Cross(tl, bl, br, tr base.Coord, c ColorDef) string {
 		cType)
 }
 
-func Triangle(right, left, top base.Coord, c ColorDef) string {
+func Triangle(right, left, top point.Coord, c ColorDef) string {
 	cType := "tw"
 	if c == BLACK {
 		cType = "tb"
@@ -86,7 +86,7 @@ func Triangle(right, left, top base.Coord, c ColorDef) string {
 		cType)
 }
 
-func Circle(pt base.Coord, r float64, c ColorDef) string {
+func Circle(pt point.Coord, r float64, c ColorDef) string {
 	cType := "cw"
 	if c == BLACK {
 		cType = "cb"
@@ -94,7 +94,7 @@ func Circle(pt base.Coord, r float64, c ColorDef) string {
 	return fmt.Sprintf(circleTemplate, twop(pt.Xf()), twop(pt.Yf()), twop(r), cType)
 }
 
-func Square(tl, bl, br, tr base.Coord, c ColorDef) string {
+func Square(tl, bl, br, tr point.Coord, c ColorDef) string {
 	cType := "qw"
 	if c == BLACK {
 		cType = "qb"
@@ -107,7 +107,7 @@ func Square(tl, bl, br, tr base.Coord, c ColorDef) string {
 		cType)
 }
 
-func Text(pt base.Coord, size float64, chars string, c ColorDef) string {
+func Text(pt point.Coord, size float64, chars string, c ColorDef) string {
 	fsize := twop(size) - 2
 	return fmt.Sprintf(textTemplate2,
 		fsize,
@@ -116,7 +116,7 @@ func Text(pt base.Coord, size float64, chars string, c ColorDef) string {
 		c)
 }
 
-func WhiteDisc(pt base.Coord, r float64) string {
+func WhiteDisc(pt point.Coord, r float64) string {
 	return fmt.Sprintf(stoneTemplate, twop(pt.Xf()), twop(pt.Yf()), twop(r), "dd")
 }
 

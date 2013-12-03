@@ -1,13 +1,13 @@
 package eps
 
 import (
-	"otre/base"
+	"otre/point"
 )
 
 // EPS Coordinates
 type Coords struct {
 	// Map from string form of the intersection to the coordinate
-	CoordMap map[string]*base.CoordPt
+	CoordMap map[string]*point.CoordPt
 	Radius   float64
 }
 
@@ -17,11 +17,11 @@ func ConstructCoords(totalInts, side int) *Coords {
 	radius := spacing / 2
 	startX := spacing
 	startY := spacing
-	cmap := make(map[string]*base.CoordPt)
+	cmap := make(map[string]*point.CoordPt)
 	for row := 0; row < totalInts; row++ {
 		for col := 0; col < totalInts; col++ {
-			intPt := &base.IntPt{col, row}
-			coordPt := &base.CoordPt{startX + spacing*float64(col),
+			intPt := &point.IntPt{col, row}
+			coordPt := &point.CoordPt{startX + spacing*float64(col),
 				startY + spacing*float64(row)}
 			coordPt = coordPt.ReflectY(float64(side) / 2)
 			strPt := intPt.String()

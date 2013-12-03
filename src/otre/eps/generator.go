@@ -3,7 +3,7 @@ package eps
 import (
 	"bytes"
 	"fmt"
-	"otre/base"
+	"otre/point"
 	"otre/core"
 )
 
@@ -41,11 +41,11 @@ func (g *Generator) genDefs() *Generator {
 func (g *Generator) genLines(mt *core.Movetree) *Generator {
 	ints := mt.Intersections()
 	for i := 0; i < ints; i++ {
-		rowStart, _ := g.c.CoordMap[(&base.IntPt{i, 0}).String()]
-		rowEnd, _ := g.c.CoordMap[(&base.IntPt{i, ints - 1}).String()]
+		rowStart, _ := g.c.CoordMap[(&point.IntPt{i, 0}).String()]
+		rowEnd, _ := g.c.CoordMap[(&point.IntPt{i, ints - 1}).String()]
 		g.b.WriteString(Line(rowStart, rowEnd))
-		colStart := g.c.CoordMap[(&base.IntPt{0, i}).String()]
-		colEnd := g.c.CoordMap[(&base.IntPt{ints - 1, i}).String()]
+		colStart := g.c.CoordMap[(&point.IntPt{0, i}).String()]
+		colEnd := g.c.CoordMap[(&point.IntPt{ints - 1, i}).String()]
 		g.b.WriteString(Line(colStart, colEnd))
 	}
 	g.b.WriteString(Stroke(0.5))
@@ -61,7 +61,7 @@ func (g *Generator) genStarPoints(mt *core.Movetree) *Generator {
 	return g
 }
 
-func getStarPoints(ints int) []*base.IntPt {
+func getStarPoints(ints int) []*point.IntPt {
 	var pts [][]int
 	midway := ints / 2
 	if ints == 19 {
@@ -73,12 +73,12 @@ func getStarPoints(ints int) []*base.IntPt {
 	} else {
 		pts = [][]int{[]int{midway}}
 	}
-	var outpts []*base.IntPt
+	var outpts []*point.IntPt
 	for i := 0; i < len(pts); i++ {
 		subslice := pts[i]
 		for j := 0; j < len(subslice); j++ {
 			for k := 0; k < len(subslice); k++ {
-				outpts = append(outpts, &base.IntPt{subslice[j], subslice[k]})
+				outpts = append(outpts, &point.IntPt{subslice[j], subslice[k]})
 			}
 		}
 	}

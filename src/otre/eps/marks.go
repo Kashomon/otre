@@ -1,7 +1,7 @@
 package eps
 
 import (
-	"otre/base"
+	"otre/point"
 	"otre/core"
 	"regexp"
 	"strings"
@@ -32,7 +32,7 @@ func (g *Generator) genMarks(p *core.Props) *Generator {
 }
 
 // Draw X Marks
-func (g *Generator) xMarks(pts []*base.IntPt) *Generator {
+func (g *Generator) xMarks(pts []*point.IntPt) *Generator {
 	r := g.c.Radius
 	fudge := float64(r / 5) // so we stay within the circle
 	a := ROOT_TWO/2*r - fudge
@@ -57,7 +57,7 @@ func (g *Generator) xMarks(pts []*base.IntPt) *Generator {
 	return g
 }
 
-func (g *Generator) triangleMarks(pts []*base.IntPt) *Generator {
+func (g *Generator) triangleMarks(pts []*point.IntPt) *Generator {
 	fudge := g.c.Radius / 4. // so we stay within the circle
 	r := g.c.Radius - fudge
 	g.b.WriteString(bTriDef + wTriDef)
@@ -80,7 +80,7 @@ func (g *Generator) triangleMarks(pts []*base.IntPt) *Generator {
 	return g
 }
 
-func (g *Generator) circleMarks(pts []*base.IntPt) *Generator {
+func (g *Generator) circleMarks(pts []*point.IntPt) *Generator {
 	r := g.c.Radius / 2
 	g.b.WriteString(bCircleDef + wCircleDef)
 	g.b.WriteString(Stroke(1))
@@ -99,7 +99,7 @@ func (g *Generator) circleMarks(pts []*base.IntPt) *Generator {
 	return g
 }
 
-func (g *Generator) squareMarks(pts []*base.IntPt) *Generator {
+func (g *Generator) squareMarks(pts []*point.IntPt) *Generator {
 	r := g.c.Radius
 	fudge := float64(r / 6) // so we stay within the circle
 	a := ROOT_TWO/2*r - fudge
@@ -135,7 +135,7 @@ func (g *Generator) labels(data []string) *Generator {
 			continue
 		}
 		lh, txt := splat[0], splat[1]
-		pt, err := base.FromSgfCoord(lh)
+		pt, err := point.FromSgfCoord(lh)
 		if err != nil {
 			continue
 		}
