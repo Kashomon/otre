@@ -82,8 +82,8 @@ func (g *Generator) triangleMarks(pts []*point.IntPt) *Generator {
 
 func (g *Generator) circleMarks(pts []*point.IntPt) *Generator {
 	r := g.c.Radius / 2
-	g.b.WriteString(bCircleDef + wCircleDef)
-	g.b.WriteString(Stroke(1))
+	g.b.WriteString(circleDef)
+	g.b.WriteString(Stroke(1)) // Why is this here?
 	for i := range pts {
 		s := pts[i].String()
 		c := g.c.CoordMap[s]
@@ -126,6 +126,7 @@ func (g *Generator) squareMarks(pts []*point.IntPt) *Generator {
 
 func (g *Generator) labels(data []string) *Generator {
 	unicodeRegex, err := regexp.Compile("\\\\u")
+	g.b.WriteString(textCenterDef)
 	if err != nil {
 		panic(err)
 	}
