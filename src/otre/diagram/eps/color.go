@@ -12,6 +12,7 @@ const (
 	WHITE
 )
 
+// EPS Color interface
 type Color interface {
 	ColorString() string
 }

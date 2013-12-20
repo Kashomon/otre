@@ -1,5 +1,6 @@
 package eps
 
+
 import (
 	"bytes"
 	"fmt"
@@ -7,9 +8,13 @@ import (
 	"otre/core"
 )
 
+// A generator is a struct that contains information about diagram gevneration
 type Generator struct {
+	// The output buffer.
 	b    bytes.Buffer
+	// The length of a side (only applies to some diagram types)
 	side int
+	// Coordinates tracker. Doesn't apply to font-based diagrams.
 	c    *Coords
 	// Set to record which intersections have black stones.  In these cases, we
 	// need to flip the color of certain marks and labels.

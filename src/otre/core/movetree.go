@@ -1,8 +1,7 @@
-//
 // Package core provides basic functionality for dealing with Go files and
-// trees. Thus, this package contains a parser for SGFs and a tree of moves (a
-// Movetree).  Movetrees are the basic data structure used to represent Baduk
-// games and problems
+// trees. This package contains a parser for SGFs and a struct describing a tree
+// of moves (a Movetree or a.k.a Go AST).  Movetrees are the basic data
+// structure used to represent Baduk games and problems.
 //
 // Creating
 //

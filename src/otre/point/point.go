@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+// We use Coord to designate an object than can retrieve points as floats. In
+// the future, one could expect that this would encompase operations on floats.
 type Coord interface {
 	Xf() float64
 	Yf() float64
@@ -23,6 +25,7 @@ func FromSgfCoord(coord string) (*IntPt, error) {
 	return &IntPt{x, y}, nil
 }
 
+// An integer point. These are often used to represent board
 type IntPt struct {
 	X, Y int
 }

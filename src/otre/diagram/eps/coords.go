@@ -4,7 +4,7 @@ import (
 	"otre/point"
 )
 
-// EPS Coordinates
+// Coordinates for stones.
 type Coords struct {
 	// Map from string form of the intersection to the coordinate
 	CoordMap map[string]*point.CoordPt

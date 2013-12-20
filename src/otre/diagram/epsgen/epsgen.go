@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"otre/core"
-	"otre/eps"
+	"otre/diagram/eps"
 	"strings"
 )
 
